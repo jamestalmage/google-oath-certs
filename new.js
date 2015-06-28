@@ -32,7 +32,6 @@ function parse(body) {
   return parsedCerts;
 }
 
-
 function latestExpiration(certArray) {
   return pickit.max(certArray, 'notAfter').notAfter;
 }
@@ -50,13 +49,21 @@ function chooseCert(certArray) {
 }
 
 function make() {
-  return unexpired({
+  var fetchArray = unexpired({
     fetch: fetch,
     buffer: '30 seconds',
     prefetch: '5 hours',
     retry: '20 minutes',
     expires: latestExpiration,
     copy: chooseCert
+  });
+
+  return unexpired({
+    fetch: fetchArray,
+    buffer: '30 seconds',
+    prefetch: '5 hours',
+    retry: '20 minutes',
+    expires: 'notAfter'
   });
 }
 
