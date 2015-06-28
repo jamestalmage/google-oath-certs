@@ -38,12 +38,10 @@ function latestExpiration(certArray) {
 function chooseCert(certArray) {
   var now = new Date().getTime();
   var limit = now + 30000;
-  for (var i = 0; i < certArray.length; i ++) {
-    var cert = certArray[i];
-    if (now > cert.notBefore.getTime() && limit < cert.notAfter.getTime()) {
-      return JSON.stringify(cert);
-    }
-  }
+  var cert = pickit.max(certArray.filter(function(cert){
+    return now > cert.notBefore.getTime() && limit < cert.notAfter.getTime();
+  }),'notAfter');
+  if(cert) return JSON.stringify(cert);
   throw new Error('no certs are valid right now');
 }
 

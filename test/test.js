@@ -88,6 +88,18 @@ describe('google-oath-certs', function() {
     });
   });
 
+  it('fetches the certificate that is valid the longest', function(done) {
+    clock.tick(sampleTimes[1].notBefore+1);
+    scope.get(CERT_PATH).once().reply(200, sampleCert);
+    fetch(function(err, result){
+      if(err) {
+        return done(err);
+      }
+      assert.equal(result.notBefore.getTime(), sampleTimes[1].notBefore);
+      done();
+    });
+  });
+
   it('makes defensive copies for each callback', function(done) {
     clock.tick(sampleTimes[0].notBefore+1);
     scope.get(CERT_PATH).once().reply(200, sampleCert);
