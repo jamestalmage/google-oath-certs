@@ -6,7 +6,7 @@ describe('google-oath-certs', function() {
   var CERT_HOST = 'https://www.googleapis.com';
   var CERT_PATH = '/oauth2/v1/certs';
 
-  var createFetch = require('../new');
+  var googleCerts = require('..');
 
   var sampleDates = [
     // sample 1
@@ -50,7 +50,7 @@ describe('google-oath-certs', function() {
 
   beforeEach(function() {
     clock = sinon.useFakeTimers('Date');
-    fetch = createFetch();
+    fetch = googleCerts.create();
   });
 
   afterEach(function() {

@@ -26,8 +26,7 @@
   },
   "homepage": "https://github.com/jamestalmage/google-oath-certs#readme",
   "files": [
-    "index.js",
-    "new.js"
+    "index.js"
   ],
   "devDependencies": {
     "codeclimate-test-reporter": "0.0.4",
