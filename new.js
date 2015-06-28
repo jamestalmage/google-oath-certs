@@ -25,7 +25,6 @@ function parse(body) {
     /* istanbul ignore else */
     if(certs.hasOwnProperty(i)) {
       var parsedCert = x509.parseCert(certs[i]);
-      // console.log(parsedCert);
       parsedCerts.push(parsedCert);
     }
   }
@@ -42,10 +41,26 @@ function chooseCert(certArray) {
   for (var i = 0; i < certArray.length; i ++) {
     var cert = certArray[i];
     if (now > cert.notBefore.getTime() && limit < cert.notAfter.getTime()) {
-      return cert;
+      return JSON.stringify(cert);
     }
   }
   throw new Error('no certs are valid right now');
+}
+
+var reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.{0,1}\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+
+function dateParser(key, value) {
+  if (typeof value === 'string') {
+    var a = reISO.test(value);
+    if (a) {
+      return new Date(value);
+    }
+  }
+  return value;
+}
+
+function reconstitute(json) {
+  return JSON.parse(json, dateParser);
 }
 
 function make() {
@@ -63,7 +78,8 @@ function make() {
     buffer: '30 seconds',
     prefetch: '5 hours',
     retry: '20 minutes',
-    expires: 'notAfter'
+    expires: 'notAfter',
+    copy: reconstitute
   });
 }
 

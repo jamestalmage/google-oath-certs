@@ -88,6 +88,25 @@ describe('google-oath-certs', function() {
     });
   });
 
+  it('makes defensive copies for each callback', function(done) {
+    clock.tick(sampleTimes[0].notBefore+1);
+    scope.get(CERT_PATH).once().reply(200, sampleCert);
+    var ct = 0;
+    fetch(cb);
+    fetch(cb);
+    function cb(err, result){
+      if(err) {
+        return done(err);
+      }
+      assert.equal(result.notBefore.getTime(), sampleTimes[0].notBefore);
+      result.notBefore = 3;
+      ct ++;
+      if (ct >= 2) {
+        done();
+      }
+    }
+  });
+
   it('returns both certs over time', function(done) {
     clock.tick(sampleTimes[0].notBefore+1);
     scope.get(CERT_PATH).once().reply(200, sampleCert);
